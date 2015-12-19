@@ -18,9 +18,9 @@ def order_name(name):
 
 
 def serialize(instance, file_attr='file'):
-    """serialize -- Serialize a Picture instance into a dict.
+    """serialize -- Serialize a File instance into a dict.
 
-    instance -- Picture instance
+    instance -- File instance
     file_attr -- attribute name that contains the FileField or ImageField
 
     """
@@ -34,5 +34,3 @@ def serialize(instance, file_attr='file'):
         'deleteUrl': reverse('upload-delete', args=[instance.pk]),
         'deleteType': 'DELETE',
     }
-
-
