@@ -11,14 +11,10 @@
 
 /*jslint nomen: true, regexp: true */
 /*global window, angular */
-
-(function () {
+function createControllers(url, urlview) {
     'use strict';
 
-
-    var isOnGitHub = window.location.hostname === 'blueimp.github.io',
-        url = '/upload/angular/',
-        urlview = '/upload/view/';
+    var demo_settings = false
 
     angular.module('demo', [
         'blueimp.fileupload'
@@ -32,7 +28,7 @@
                     '/cors/result.html?%s'
                 );
 
-                if (isOnGitHub) {
+                if (demo_settings) {
                     // Demo settings:
                     angular.extend(fileUploadProvider.defaults, {
                         // Enable image resizing, except for Android and Opera,
@@ -53,7 +49,7 @@
                 $scope.options = {
                     url: url
                 };
-                if (!isOnGitHub) {
+                if (!demo_settings) {
                     $scope.loadingFiles = true;
                     $http.get(urlview)
                         .then(
@@ -102,5 +98,4 @@
                 }
             }
         ]);
-
-}());
+};

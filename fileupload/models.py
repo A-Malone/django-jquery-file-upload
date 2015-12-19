@@ -1,5 +1,17 @@
-# encoding: utf-8
+import os
+import uuid
+
 from django.db import models
+from django.utils import timezone
+
+def get_new_token():
+    return uuid.uuid1()
+
+# Create your models here.
+class SingleUseToken(models.Model):
+    token           = models.CharField(default=get_new_token, max_length=200)
+    create_date     = models.DateTimeField(default=timezone.now)
+    expiry_date     = models.DateTimeField(default=timezone.now)
 
 class File(models.Model):
     """This is a small demo using just two fields. The slug field is really not
@@ -8,8 +20,9 @@ class File(models.Model):
     problems installing pillow, use a more generic FileField instead.
 
     """
-    file = models.FileField()
-    slug = models.SlugField(max_length=50, blank=True)
+    file            = models.FileField()
+    slug            = models.SlugField(max_length=50, blank=True)
+    token           = models.ForeignKey(SingleUseToken, on_delete=models.CASCADE)
 
     def __unicode__(self):
         return self.file.name

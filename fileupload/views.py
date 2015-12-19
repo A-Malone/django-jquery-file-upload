@@ -3,7 +3,8 @@ import json
 
 from django.http import HttpResponse
 from django.views.generic import CreateView, DeleteView, ListView
-from .models import File
+from django.shortcuts import get_object_or_404
+from .models import File, SingleUseToken
 from .response import JSONResponse, response_mimetype
 from .serialize import serialize
 
@@ -12,7 +13,20 @@ class FileCreateView(CreateView):
     model = File
     fields = "__all__"
 
+    def dispatch(self, *args, **kwargs):
+        print(kwargs['token_id'])
+        self.token = get_object_or_404(SingleUseToken, token=kwargs['token_id'])
+        return super(FileCreateView, self).dispatch(*args, **kwargs)
+
+    # Adds the token to the context
+    def get_context_data(self, *args, **kwargs):
+        context_data = super(FileCreateView, self).get_context_data(
+            *args, **kwargs)
+        context_data.update({'token': self.token})
+        return context_data
+
     def form_valid(self, form):
+        print("Valid")
         self.object = form.save()
         files = [serialize(self.object)]
         data = {'files': files}
